@@ -1,0 +1,107 @@
+<!DOCTYPE HTML>
+<!--
+	Hyperspace by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>MQTT temperature sensor with ESP8266</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Header -->
+			<header id="header">
+				<a href="index.html" class="title">mec-kon's projects</a>
+				<nav>
+					<ul>
+						<li><a href="index.html">Home</a></li>
+						<li><a href="index.html#one" class="active">Projects</a></li>
+					</ul>
+				</nav>
+			</header>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<section id="main" class="wrapper">
+						<div class="inner">
+							<h1 class="major">MQTT temperature sensor with a solar cell,<br> a lithium-ion battery and an ESP8266</h1>
+							<p>This is a project to measure a temperature with an LM75 and BME680/BME280 temperature sensor, which is transmitted to an openHAB smarthome platform over WIFI via MQTT using an ESP8266 microcontroller.
+							The temperature sensor and ESP8266 are powered by a lithium-ion battery, which is charged by a 1 Watt solar cell.</p>
+							<p>This guide is about 3D printing of a matching housing, creating a matching PCB and programming the software.</p>
+							
+							<h2>Printing a case</h2>
+							<p>First, a housing is printed for the temperature sensor so it can be mounted outside and be protected from dust and water.</p>
+							<span class="image fit"><img src="images/project_1/1.jpg" alt="" /></span>
+							<p>The picture shows the <a href="https://www.thingiverse.com/thing:3486326">"Stevenson Screen"</a>, which is a remix from <a href="https://www.thingiverse.com/thing:840270/remixes">"Small Sun Screen (Stevenson Screen) for 1-wire temperature sensors"</a> and has been additionally extended by <a href="https://github.com/yodatee">yodatee</a>. 
+							This item now has a suitable hole for a two-pin JST-XH connector,
+							to which the solar cell is connected. It can be found on <a href="https://www.thingiverse.com/thing:4624750">Thingiverse</a>.</p>
+							<p>When printing the housing, it is important to avoid the use of black filament to prevent the measured temperature from being incorrectly measured in direct sunlight.</p>
+							
+							
+							<h2>Power supply</h2>
+							<p> The electronics is supplied by a <a href="https://de.aliexpress.com/item/33031136845.html?spm=a2g0s.9042311.0.0.33974c4dWzDnjp">3800mAh battery</a>, which is charged by a 6V/1W <a href="https://de.aliexpress.com/item/4001226159917.html?spm=a2g0s.9042311.0.0.33974c4dWzDnjp"> solar cell</a>.<br> For this, a <a href="https://de.aliexpress.com/item/2030115519.html?spm=a2g0o.productlist.0.0.77fc70f9XHQIMS&algo_pvid=754df9bb-a9c3-4d02-a125-c04ba72bbac0&algo_expid=754df9bb-a9c3-4d02-a125-c04ba72bbac0-0&btsid=0bb0622c16027763160593195e783f&ws_ab_test=searchweb0_0,searchweb201602_,searchweb201603_">TP4056 linear battery charger</a> is used.
+							This charger can be adapted for different solar modules by changing the resistor R3. To change the resistance, the available charge current of the solar cell must first be calculated.
+							This is calculated as following:<br><code> I=P/U = 1W/6V = 170mA</code>.<br> According to the <a href="http://simtronyx.de/documents/documentation/TP4056.pdf">data sheet</a> the next lower available charge current is 130mA at a resistance of 10kΩ.
+							So the resistor R3 must be replaced by a 10kΩ resistor. </p>
+							<span class="image fit"><img src="images/project_1/2.jpg" alt="" /></span>							
+							<p>In this project, JST-XH connectors are used to connect the individual power supply components. By adding a JST-XH socket to the bottom of the housing, the solar cell can easily be connected to the housing. If the battery in the housing runs out of power, the solar cell cable can be disconnected and the battery can be charged with a charger or another battery without opening the housing.</p>
+							
+							<h2>Wiring</h2>
+							<p>To charge the battery with the solar cell, a cable with a JST-XH plug must first be attached to the solar cell. Then, the matching socket is glued into the housing. 
+							After that, the socket is connected to the two contacts on the left side of the TP4056 by cable.<br> The contacts B+ and B- on the right side are connected to the battery.
+							Since the battery has a JST-XH plug, a JST-XH socket can be used here as well. <br>
+							Finally, the contacts OUT+, B+ and GND (B- and OUT-) are connected to the PCB via JST-XH plug.</p>
+							
+							<h2>The PCB Layout</h2>
+							<span class="image fit"><img src="images/project_1/3.jpg" alt="" /></span>
+							<p>
+							The current circuit board is designed by <a href="https://github.com/mec-kon/">mec-kon</a>, <a href="https://github.com/eike2511">eike2511</a> and <a href="https://github.com/hrahlf">hrahlf</a>.<br>
+							The pcb files and a detailed description be found  <a href="https://github.com/mec-kon/weather_station">here</a>.<br>
+							Main components of the pcb board are an ESP8266, which sends the measured temperature via MQTT over wifi, either a BME680 or BME280 sensor to measure temperature, air pressure, humidity and air quality (BME680), and a LM75 temperature sensor as backup.
+							</p>
+							<span class="image fit"><img src="images/project_1/4.jpg" alt="" /></span>
+							
+							<h2>Programming the software</h2>
+							<p>The software can be found on <a href="https://github.com/mec-kon/mqtt-temperature-sensor_esp8266">GitHub</a><br>
+                            With the software, the ESP8266 sends the current temperature to openHAB every 10 minutes.</p>
+							<p>In this project, Platformio is used to program the ESP8266 microcontroller, so it must be installed.<br>
+							Then, the software can be downloaded with <code>git clone https://github.com/mec-kon/mqtt-temperature-sensor_esp8266.git</code>.<br>
+							After that, it can be navigated into the project directory with <code>cd mqtt-temperature-sensor_esp8266</code>.<br>
+							Finally, the submodules can be initialized with <code>git submodule update --init</code>.</p>
+							<p>To use the software, the file src/config.h must be adapted.<br>
+							To flash the finished software to the ESP01, all that remains is to run <code>platformio run -t upload</code>.</p>
+							
+							<h2>openHAB</h2>
+							<p>The configuration of openHAB will be discussed in another tutorial</p>
+						</div>
+					</section>
+
+			</div>
+
+		<!-- Footer -->
+			<footer id="footer" class="wrapper alt">
+				<div class="inner">
+					<ul class="menu">
+						<li>&copy; mec-kon. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+					</ul>
+				</div>
+			</footer>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>

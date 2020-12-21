@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<!--
+	Hyperspace by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>MQTT temperature sensor with ESP8266</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Header -->
+			<header id="header">
+				<a href="index.html" class="title">mec-kon's projects</a>
+				<nav>
+					<ul>
+						<li><a href="index.html">Home</a></li>
+						<li><a href="generic.html" class="active">Generic</a></li>
+						<li><a href="elements.html">Elements</a></li>
+					</ul>
+				</nav>
+			</header>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<section id="main" class="wrapper">
+						<div class="inner">
+							<h1 class="major">Displaying a received temperature in openHAB</h1>
+							<p>This guide shows the configuration of openHAB to display a received temperature and the time of receipt.</p>
+							<p>Thereby the temperature is received as string per MQTT.</p>
+							
+							<h2>Install Mosquitto MQTT Broker</h2>
+							<p>As the installation is different for each distribution, this guide will not deal with this topic.</p>
+							
+							<h2>Adding configuration files to openHAB</h2>
+							<p>In the openHAB configuration folder (under Linux: /etc/openhab2/), the file "rules/temperature.rules" must be added and the file "items/default.items" must be extendet by the following code.<br>
+							<a href="https://gist.github.com/mec-kon/5bd49d9167bb35106f7c387719df9e59">Configuration files</a></p>
+							<p>A documentation about the default.items file can be found <a href="https://www.openhab.org/docs/configuration/items.html">here</a>.</p>
+							
+							
+							<h2>Adding a MQTT binding to openHAB</h2>
+							<p>To use MQTT in openHAB, a binding must be added. A MQTT binding can be added in the openHAB PaperUi under Configuration/Bindings.</p>
+							<span class="image fit"><img src="images/project_2/2.jpg" alt="" /></span>
+							
+							<h2>Adding a "Generic MQTT Thing" to openHAB</h2>
+							<p>After that, a "Generic MQTT Thing" must be added under Configuration/Things.
+							This can be done by clicking on the blue "+" button, choosing "MQTT Binding" and then clicking "MANUALLY ADD THING".<br>
+							Then, a name for the "Generic MQTT Thing" can be choosen, where the "Thing ID" must be the same as in the string "Test_Temperature_Str" in the file default.itmes.
+							In this example test_temperature (mqtt:topic:<b>test_temperature</b>:test_temperature_channel)
+							<br>
+							As Bridge, Mosquitto Broker must be selected.<p>
+							<span class="image fit"><img src="images/project_2/3.jpg" alt="" /></span>
+
+							<h2>Adding a "Channel" to the "Generic MQTT Thing"</h2>
+							<p>Now, a "Channel" can be added to the previously created "Generic MQTT Thing". The previously created Thing can be found under Configuration/Things.<br>
+							In the opening menu, "Text Value" must be selected as "Channel type".
+							After that, in the upcoming menu the "Channel id" and the "MQTT State Topic" must be entered, where the "Channel id"  must be the same as in the string "Test_Temperature_Str"
+							in the File default.items. In this example test_temperature_channel (mqtt:topic:test_temperature:<b>test_temperature_channel</b>).<br>
+							Except that, the "MQTT state topic" must match the topic of the temperature sensor (e.g. "/home/balcony/temperature").</p>
+							<span class="image fit"><img src="images/project_2/4.jpg" alt="" /></span>
+							
+							
+						</div>
+					</section>
+
+			</div>
+
+		<!-- Footer -->
+			<footer id="footer" class="wrapper alt">
+				<div class="inner">
+					<ul class="menu">
+						<li>&copy; mec-kon. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+					</ul>
+				</div>
+			</footer>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
